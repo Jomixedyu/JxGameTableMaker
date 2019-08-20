@@ -52,10 +52,10 @@ namespace TableMaker
                 {
                     dynamic[,] rangeArray = Target.Value;
 
-                    for (int ri = 1; ri <= rangeArray.Rank; ri++)
-                        for (int ci = 1; ci < rangeArray.GetLength(ri-1); ci++)
+                    for (int ri = 1; ri <= rangeArray.GetLength(0); ri++)
+                        for (int ci = 1; ci <= rangeArray.GetLength(1); ci++)
                         {
-                            int a = rangeArray.GetLength(ri - 1);
+                            int a = rangeArray.GetLength(1);
                             if (rangeArray[ri,ci] == null)
                             {
 
@@ -168,6 +168,7 @@ namespace TableMaker
 
         private void ErrorCheckBtn_Click(object sender, RibbonControlEventArgs e)
         {
+            if (!IsLoad() || !IsTable(app.ActiveSheet)) return;
             Excel.Worksheet sheet = app.ActiveSheet;
             Range r = sheet.Cells[1, 1];
             MessageBox.Show(r.Text);
@@ -184,9 +185,10 @@ namespace TableMaker
 
         private void NewTableBtn_Click(object sender, RibbonControlEventArgs e)
         {
+            if (!IsLoad()) return;
+            if (MessageBox.Show("将会覆盖当前页内容，继续？", "Warning", MessageBoxButtons.YesNo) != DialogResult.Yes) return;
             Excel.Worksheet sheet = app.ActiveSheet;
             sheet.Cells[1, 1].Value = "$Table";
-            sheet.Cells[1, 2].Value = "$Name:" + sheet.Name;
             sheet.Cells[2, 1].Value = "字段1";
             sheet.Cells[2, 2].Value = "字段2";
             sheet.Cells[3, 1].Value = "int";
@@ -201,10 +203,12 @@ namespace TableMaker
 
         private void NewExmTableBtn_Click(object sender, RibbonControlEventArgs e)
         {
+            if (!IsLoad()) return;
             Excel.Worksheet sheet = app.Sheets.Add();
             //Excel.Worksheet sheet = app.ActiveSheet;
             sheet.Cells[1, 1].Value = "$Table";
-            sheet.Cells[1, 2].Value = "$Name:" + sheet.Name;
+            sheet.Cells[1, 4].Value = "$Img:.\\Project\\Client";
+            sheet.Cells[1, 4].AddComment("如果添加“$Img:路径”则会和字段自动拼接并将图片显示在检视板中");
 
             sheet.Cells[2, 1].Value = "ID序号";
             sheet.Cells[2, 2].Value = "名字";
@@ -229,7 +233,7 @@ namespace TableMaker
             sheet.Cells[4, 1].Value = "0~5";
             sheet.Cells[4, 2].Value = "4";
             sheet.Cells[4, 3].Value = "120~400";
-            sheet.Cells[4, 4].Value = "$E:.*\\...\\.prefab";
+            sheet.Cells[4, 4].Value = "$E:.*\\...\\.jpg";
             sheet.Cells[4, 5].Value = "0,0~1920,1080";
             sheet.Cells[4, 6].Value = "";
             sheet.Cells[4, 7].Value = "";
@@ -251,7 +255,7 @@ namespace TableMaker
             sheet.Cells[6, 1].Value = "1";
             sheet.Cells[6, 2].Value = "小鸟";
             sheet.Cells[6, 3].Value = "120.5";
-            sheet.Cells[6, 4].Value = "Asset\\001.prefab";
+            sheet.Cells[6, 4].Value = "Asset\\001.jpg";
             sheet.Cells[6, 5].Value = "500,500";
             sheet.Cells[6, 6].Value = "0,0,0";
             sheet.Cells[6, 7].Value = "50,50,50;0,0,0;1,1,1";
@@ -262,7 +266,7 @@ namespace TableMaker
             sheet.Cells[7, 1].Value = "2";
             sheet.Cells[7, 2].Value = "小猫";
             sheet.Cells[7, 3].Value = "125.55";
-            sheet.Cells[7, 4].Value = "Asset\\002.prefab";
+            sheet.Cells[7, 4].Value = "Asset\\002.jpg";
             sheet.Cells[7, 5].Value = "450,400";
             sheet.Cells[7, 6].Value = "0,30,0";
             sheet.Cells[7, 7].Value = "25,25,25;0,30,0;1,1,1";
@@ -273,13 +277,60 @@ namespace TableMaker
             sheet.Cells[8, 1].Value = "3";
             sheet.Cells[8, 2].Value = "小3";
             sheet.Cells[8, 3].Value = "399.55";
-            sheet.Cells[8, 4].Value = "Asset\\003.prefab";
+            sheet.Cells[8, 4].Value = "Asset\\003.jpg";
             sheet.Cells[8, 5].Value = "30,10";
             sheet.Cells[8, 6].Value = "0,30,0";
             sheet.Cells[8, 7].Value = "80,25,56;0,4,35;1,1,1";
             sheet.Cells[8, 8].Value = "#FFFFFF";
             sheet.Cells[8, 9].Value = "0,0,0,0";
             ((Range)sheet.Cells[8, 8]).AddComment("16进制的颜色值，同事支持RGBA，例如#FFFFFFFF");
+        }
+
+        private void button2_Click(object sender, RibbonControlEventArgs e)
+        {
+
+        }
+
+        private void NewSheetBtn_Click(object sender, RibbonControlEventArgs e)
+        {
+            if (!IsLoad()) return;
+            Excel.Worksheet sheet = app.Sheets.Add();
+            sheet.Cells[1, 1].Value = "$Table";
+            sheet.Cells[2, 1].Value = "字段1";
+            sheet.Cells[2, 2].Value = "字段2";
+            sheet.Cells[3, 1].Value = "int";
+            sheet.Cells[3, 2].Value = "string";
+            sheet.Cells[4, 1].Value = "20";
+            sheet.Cells[4, 2].Value = "4";
+            sheet.Cells[5, 1].Value = "ID";
+            sheet.Cells[5, 2].Value = "Data";
+            sheet.Cells[6, 1].Value = "18";
+            sheet.Cells[6, 2].Value = "A String";
+        }
+
+        private void ErrorCheckAllBtn_Click(object sender, RibbonControlEventArgs e)
+        {
+
+        }
+
+        private void ExportBtn_Click(object sender, RibbonControlEventArgs e)
+        {
+
+        }
+
+        private void QuickSqliteBtn_Click(object sender, RibbonControlEventArgs e)
+        {
+
+        }
+
+        private void QuickCSVBtn_Click(object sender, RibbonControlEventArgs e)
+        {
+
+        }
+
+        private void UndoBtn_Click(object sender, RibbonControlEventArgs e)
+        {
+            app.Undo();
         }
     }
 }
